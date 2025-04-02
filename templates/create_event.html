@@ -1,0 +1,103 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Create Event | Seminar Hall Booking</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="card shadow-sm">
+                    <div class="card-header bg-primary text-white">
+                        <h3 class="text-center mb-0">Create a New Event</h3>
+                    </div>
+                    <div class="card-body">
+                        <form action="/create_event" method="post">
+                            <!-- Event Name -->
+                            <div class="mb-3">
+                                <label for="event_name" class="form-label">Event Name:</label>
+                                <input type="text" id="event_name" name="event_name" class="form-control" placeholder="Enter event name" required>
+                            </div>
+
+                            <!-- Event Date -->
+                            <div class="mb-3">
+                                <label for="event_date" class="form-label">Date:</label>
+                                <input type="date" id="event_date" name="event_date" class="form-control" required>
+                            </div>
+
+                            <!-- Seminar Hall -->
+                            <div class="mb-3">
+                                <label for="seminar_hall" class="form-label">Seminar Hall:</label>
+                                <select id="seminar_hall" name="seminar_hall" class="form-select" required>
+                                    <option value="" disabled selected>Select a Hall</option>
+                                    {% for hall in halls %}
+                                        <option value="{{ hall }}">{{ hall }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+
+                            <!-- Department Name -->
+                            {% if session.get('dept_name') %}
+                                <div class="mb-3">
+                                    <label for="dept_name" class="form-label">Department:</label>
+                                    <input type="text" id="dept_name" name="dept_name" class="form-control" value="{{ session.get('dept_name') }}" readonly>
+                                </div>
+                            {% else %}
+                                <div class="mb-3">
+                                    <label for="dept_name" class="form-label">Department:</label>
+                                    <input type="text" id="dept_name" name="dept_name" class="form-control" placeholder="Enter department name" required>
+                                </div>
+                            {% endif %}
+
+                            <!-- Available Time Slots -->
+                            <div class="mb-3">
+                                <label class="form-label">Available Time Slots:</label><br>
+                                {% if available_slots %}
+                                    {% for slot, status in available_slots.items() %}
+                                        {% if status == "Available" %}
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="checkbox" name="time_slots" value="{{ slot }}" id="slot_{{ loop.index }}">
+                                                <label class="form-check-label" for="slot_{{ loop.index }}">
+                                                    {{ slot }} (Available)
+                                                </label>
+                                            </div>
+                                        {% else %}
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="checkbox" disabled>
+                                                <label class="form-check-label text-muted">
+                                                    {{ slot }} (Booked)
+                                                </label>
+                                            </div>
+                                        {% endif %}
+                                    {% endfor %}
+                                {% else %}
+                                    <p class="text-danger">No slots available for this date and hall.</p>
+                                {% endif %}
+                            </div>
+
+                            <!-- Student Count -->
+                            <div class="mb-3">
+                                <label for="student_count" class="form-label">Student Count:</label>
+                                <input type="number" id="student_count" name="student_count" class="form-control" placeholder="Enter number of students" required>
+                            </div>
+
+                            <!-- Description -->
+                            <div class="mb-3">
+                                <label for="description" class="form-label">Description:</label>
+                                <textarea id="description" name="description" class="form-control" rows="4" placeholder="Enter event description" required></textarea>
+                            </div>
+
+                            <!-- Submit Button -->
+                            <div class="d-grid">
+                                <button type="submit" class="btn btn-primary">Create Event</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
